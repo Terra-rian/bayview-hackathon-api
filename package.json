@@ -1,0 +1,17 @@
+{
+  "name": "bayview-hackathon-api",
+  "version": "1.0.0",
+  "description": "An API between an Arduino and a website.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Terra-rian",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "eslint": "^8.20.0",
+    "typescript": "^4.7.4"
+  }
+}
