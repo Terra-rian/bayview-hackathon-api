@@ -8,7 +8,7 @@ export class ArduinoManager {
     parser: ReadlineParser;
 
     constructor() {
-        this.port = new SerialPort({ path: 'COM3', baudRate: 9600 });
+        this.port = new SerialPort({ path: 'COM3', baudRate: 115200 });
         this.parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     }
 
@@ -26,13 +26,12 @@ export class ArduinoManager {
         });
 
         this.parser.on('data', async (data) => {
-            console.log('Data from Arduino: ', data);
-
-            const formattedData: { id?: string | undefined, ml?: number | undefined, waterPercentage?: number | undefined, lastWatered?: Date | undefined } = JSON.parse(data);
-            const plant = new plantModel(formattedData);
-
-            await plant.save();
-            console.log(plant._id);
+            const args = data.split(':');
+            switch(args[0]) {
+            case 'ml':
+                await plantModel.findByIdAndUpdate('62dcd1da64ff026c8a845bf8', { $inc: { ml: Math.ceil(args[1]) } });
+                break;
+            }
         });
     }
 }

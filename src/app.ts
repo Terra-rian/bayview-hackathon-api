@@ -6,32 +6,22 @@ import * as expressWinston from 'express-winston';
 import cors from 'cors';
 import { plantModel } from './schemas/plant';
 import mongodb from './mongodb';
+import { ArduinoManager } from './arduino';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = 3000;
+const port = 3007;
 
 app.use(bodyparser.json());
 app.use(cors());
 const mongo = mongodb();
-
+const ard = new ArduinoManager();
+ard.run();
 mongo.then(() => {
     server.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
-        plantModel.updateMany({}, { image: 'https://www.pngmart.com/files/22/Plant-PNG-Photo.png' });
     });
 });
-
-app.use(expressWinston.logger({
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(winston.format.colorize(), winston.format.json()),
-}));
-
-
-app.use(expressWinston.errorLogger({
-    transports: [new winston.transports.Console()],
-    format: winston.format.combine(winston.format.colorize(), winston.format.json()),
-}));
 
 app.get('/', (_req, res) => {
     res.status(200).send(`Server running at http://localhost:${port}`);
@@ -53,4 +43,16 @@ app.get('/plant/:id', async (req, res) => {
         return;
     }
     res.status(200).json(plant);
+});
+
+app.post('/water/:id', async (req, res) => {
+    const { on } = req.body;
+    if(on) {
+        ard.port.write('1');
+        await plantModel.findByIdAndUpdate('62dcd1da64ff026c8a845bf8', { lastWatered: Date.now() }); 
+
+    } else {
+        ard.port.write('0');
+    }
+    res.sendStatus(200);
 });
