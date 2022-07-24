@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const plantSchema = new Schema({
-    id: String,
     ml: Number,
     waterPercentage: Number,
     lastWatered: Date,
@@ -9,4 +8,4 @@ const plantSchema = new Schema({
     image: String,
 });
 
-export const plantModel = model('plantModel', plantSchema);
+export const plantModel = model('plant', plantSchema);
